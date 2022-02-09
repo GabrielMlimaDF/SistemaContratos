@@ -1,0 +1,216 @@
+﻿
+@model Sistemas.Models.EdtUserViewModel
+
+
+
+<h2>Criar Usuário</h2>
+@if (TempData["msg2"] != null)
+{
+
+
+    <div class="alert alert-danger mt-alerts">
+
+        @TempData["msg2"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<form id="formuser" action="/Cadastros/Cadastrar" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="dividerform">
+
+        <input type="hidden" value="@Model.IdUsuario">
+
+        <div class="form-group-lg col-md-3">
+            <label for="InputName">*Informe seu nome:</label>
+            <input type="text" class="form-control text-uppercase" id="name" name="NomeUsuario" required="" aria-describedby="name" value="@Model.NomeUsuario">
+            
+
+        </div>
+
+
+        <div class="form-group-lg col-md-3">
+
+            <label for="InputCpf">*CPF:</label>
+            <span id="cpfResponse"></span>
+            <input type="text" class="form-control" id="cpf" name="CpfUsuario" required="" value="@Model.CpfUsuario" onkeypress="return onlynumber();" onkeyup="cpfCheck(this)" maxlength="11">
+
+        </div>
+
+        <div class="form-group-lg col-md-5">
+
+            <div class="form-group-lg">
+                <label for="InputEmail1">*Digite o e-mail:</label>
+                <input type="email" class="form-control" id="email" name="EmailUsuario" required="" aria-describedby="email" value="@Model.EmailUsuario">
+            </div>
+        </div>
+    </div>
+    <div class="dividerform">
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group-lg">
+                        <label for="InputPassword1">*Digite uma senha:</label>
+                        @if (Model.NomeUsuario != null)
+                        {
+                            <input type="password" class="form-control" id="inputpassword" name="SenhaUsuario" required="" readonly>
+                        }
+                        else
+                        {
+                            <input type="password" class="form-control" id="inputpassword" name="SenhaUsuario" required="">
+
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group-lg">
+                        <label for="InputPassword1">*Repita sua senha:</label>
+                        @if (Model.NomeUsuario != null)
+                        {
+                            <p><input type="password" class="form-control" id="inputpasswordconf" required="" readonly></p>
+                        }
+                        else
+                        {
+                            <p><input type="password" class="form-control" id="inputpasswordconf" required=""></p>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        @if (Model.NomeUsuario != null)
+                        {
+                            <input type="hidden" name="IdUsuario" value="@Model.IdUsuario" />
+                            <button name="edtsalv" type="submit" class="btn btn-success">Salvar edição</button>
+                            <button type="button" class="btn btn-success">Redefinir senha</button>
+                        }
+                        else
+                        {
+
+                            <button type="submit" id="btnsalvar" class="btn btn-success">Salvar usuário</button>
+                            <input type="checkbox" class="form-check-input" id="MostrarSenha" onclick="visibilityPass()">
+                            <label class="form-check-label" for="exampleCheck1">Mostar senha</label>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+@section Scripts{
+
+
+    <script>
+
+        var password = document.getElementById("inputpassword")
+            , confirm_password = document.getElementById("inputpasswordconf");
+
+        function validatePassword() {
+            if (password.value != confirm_password.value) {
+                confirm_password.setCustomValidity("Senhas diferentes!");
+            } else {
+                confirm_password.setCustomValidity('');
+            }
+        }
+
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;
+
+    </script>
+    <script>
+        function visibilityPass() {
+            var x = document.getElementById("inputpassword");
+            var y = document.getElementById("inputpasswordconf");
+
+            if (x.type === "password" && y.type === "password") {
+                x.type = "text";
+                y.type = "text";
+            } else {
+                x.type = "password";
+                y.type = "password";
+            }
+
+        }
+    </script>
+    <script>
+        function is_cpf(c) {
+
+            if ((c = c.replace(/[^\d]/g, "")).length != 11)
+                return false
+
+            if (c == "00000000000")
+                return false;
+
+            var r;
+            var s = 0;
+
+            for (i = 1; i <= 9; i++)
+                s = s + parseInt(c[i - 1]) * (11 - i);
+
+            r = (s * 10) % 11;
+
+            if ((r == 10) || (r == 11))
+                r = 0;
+
+            if (r != parseInt(c[9]))
+                return false;
+
+            s = 0;
+
+            for (i = 1; i <= 10; i++)
+                s = s + parseInt(c[i - 1]) * (12 - i);
+
+            r = (s * 10) % 11;
+
+            if ((r == 10) || (r == 11))
+                r = 0;
+
+            if (r != parseInt(c[10]))
+                return false;
+
+            return true;
+
+
+        }
+        function onlynumber(evt) {
+            var theEvent = evt || window.event;
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+            //var regex = /^[0-9.,]+$/;
+            var regex = /^[0-9.]+$/;
+            if (!regex.test(key)) {
+                theEvent.returnValue = false;
+                if (theEvent.preventDefault) theEvent.preventDefault();
+
+            }
+        }
+
+
+        cpfCheck = function (el) {
+            document.getElementById('cpfResponse').innerHTML = is_cpf(el.value) ? '<span style="color:green">válido</span>' : '<span style="color:red">inválido</span>';
+            if (el.value == '') document.getElementById('cpfResponse').innerHTML = '';
+
+            x = is_cpf(el.value) ? document.getElementById('btnsalvar').disabled = false : document.getElementById('btnsalvar').disabled = true;
+
+        }
+
+    </script>
+
+
+
+
+}

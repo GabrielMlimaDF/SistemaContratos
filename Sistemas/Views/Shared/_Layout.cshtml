@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+</head>
+
+
+<body>
+
+    @if (Request.IsAuthenticated)
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+
+
+
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <img src="~/img/Brand.png" width="50" height="50" alt="" loading="lazy">
+                </a>
+
+
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    </ul>
+
+                    <ul class="nav navbar-nav nav">
+
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cadastros<span class="caret"></span></a>
+
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Empresa", "ListarEmpresa", "Cadastros")</li>
+                                <li>@Html.ActionLink("Usuários", "ListaUsuarios", "Cadastros")</li>
+
+
+                            </ul>
+
+                        </li>
+                    </ul>
+                    @using (Html.BeginForm("Logout", "LoginUser", FormMethod.Post, new { id = "logoffForm" }))
+                    {
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="javascript:document.getElementById('logoffForm').submit()"><span style="margin-right: 6px" class="glyphicon glyphicon-log-out"></span>Sair</a>
+
+                            </li>
+                        </ul>
+                    }
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@User.Identity.Name<span class="caret"></span></a>
+
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Perfil", "ListaUsuarios", "LoginUser")</li>
+
+                            </ul>
+                        </li>
+                    </ul>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    }
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Direitos resevados - Gabriel Matos </p>
+        </footer>
+    </div>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+
+
+</body>
+
+</html>
